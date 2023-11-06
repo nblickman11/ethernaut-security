@@ -37,6 +37,7 @@ contract Instance {
   }
 
   function authenticate(string memory passkey) public {
+    // encodePacked removes metaData and the keccak256 creates 256 bit hash.
     if(keccak256(abi.encodePacked(passkey)) == keccak256(abi.encodePacked(password))) {
       cleared = true;
     }
