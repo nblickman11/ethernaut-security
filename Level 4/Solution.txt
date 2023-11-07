@@ -1,0 +1,6 @@
+Solution:
+-Call hack() with my address as the owner!
+
+Note:
+tx.origin is the original external account
+

@@ -1,0 +1,9 @@
+Solution:
+Call the Fal1out() to become the owner.
+await contract.Fal1out()
+
+
+Other Notes:
+-The Fal1out is misspelled, so the owner was never set.
+-Even if spelled correct though, same hack, since need the 
+"constructor" keyword too.

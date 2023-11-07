@@ -1,0 +1,7 @@
+Solution:
+-Call transfer(any address, 21). Since 20-21 causes underflow.
+
+Other Notes:
+-Underflow, only works on old Solidity version.
+-(20-21) gives you 2^^256-1
+

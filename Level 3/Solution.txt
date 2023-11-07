@@ -1,0 +1,7 @@
+Solution:
+-Call my hack's contract hack function 10 times.
+-hack() gets the publicly available answer to the coin flip and 
+can call level3 with the correct guess.
+
+
+Other Notes:
