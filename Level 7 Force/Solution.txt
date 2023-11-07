@@ -1,0 +1,7 @@
+Solution:
+Call hack() with address of Level.
+Sends Ether to the empty contract, which beats the level.
+
+Other Notes:
+-selfdestruct() destroys the contract but sends it's Ether elsewhere.
+

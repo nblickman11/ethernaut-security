@@ -1,0 +1,11 @@
+Solution:
+-Call hack() with the Level address and .001 Eth (enough to become king).
+-After submission, the level will try and fail to become king, because
+payable(king).transfer(msg.value) will call our contract and fail because
+our contract doesn't have a payable fallback.
+
+Other Notes:
+-low level function ".call" allows you to call contract using the address,
+and don't need the contract instance.  Also not specifying a function here
+so calls the fallback receive()
+-receive() can only receive ether (unlike fallback())

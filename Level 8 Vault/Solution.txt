@@ -1,0 +1,9 @@
+Solution:
+Call to retrieve data at storage spot 1 on the blockchain:
+await web3.eth.getStorageAt(contract.address, 1)
+Use that result to unlock the contract.
+await contract.unlock(result)
+
+
+Other Notes:
+-even "private" variables are publicly available.
