@@ -1,0 +1,10 @@
+Solution:
+Storage slot 5 contains key we want:
+key = await web3.eth.getStorageAt(contract.address, 5)
+Must truncate 32 bytes value to 16 byte value.  Slice first 34 char's (includes 0x)
+key = key.slice(0,34)
+Call: await contract.unlock(key)
+
+Other Notes:
+-Packs data to fit in 32 bytes slot (note: array data always starts in a new slot)
+-bytes() conversion clearly uses the FIRST(LEFT) bytes of key.

@@ -1,0 +1,7 @@
+Solution:
+-call myGoTo(1) to call the Level, which calls our Hack isLastFloor twice in a row
+to set it's "top" variable to True.
+
+Other Notes:
+-Building building = Building(msg.sender); :This line creates an instance of the
+Building interface, using our Hack. So our Hack inherits from Building.

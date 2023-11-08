@@ -1,0 +1,11 @@
+Solution:
+call hack().  masks tx.origin for correct key.  for loop tries different gas amounts till correct.
+
+Other Notes:
+-calling an abi function, which fails it's require statement, will always revert
+the entire transaction.  However, using .call() instead of abi, you can check if 
+the call fails the require, and still continue to the transaction.
+-unlike bytes(), uint() conversions keep the LAST(RIGHT) bytes.
+-f's keep bytes as is, and 0 makes them 0:
+bytes8 key = bytes8(uint64(tx.origin)) & 0xffffffff0000ffff;
+

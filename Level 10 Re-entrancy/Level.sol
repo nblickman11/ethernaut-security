@@ -1,26 +1,30 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.6.12;
 
-contract King {
+import 'openzeppelin-contracts-06/math/SafeMath.sol';
 
-  address king;
-  uint public prize;
-  address public owner;
+contract Reentrance {
+  
+  using SafeMath for uint256;
+  mapping(address => uint) public balances;
 
-  constructor() payable {
-    owner = msg.sender;  
-    king = msg.sender;
-    prize = msg.value;
+  function donate(address _to) public payable {
+    balances[_to] = balances[_to].add(msg.value);
   }
 
-  receive() external payable {
-    require(msg.value >= prize || msg.sender == owner);
-    payable(king).transfer(msg.value);
-    king = msg.sender;
-    prize = msg.value;
+  function balanceOf(address _who) public view returns (uint balance) {
+    return balances[_who];
   }
 
-  function _king() public view returns (address) {
-    return king;
+  function withdraw(uint _amount) public {
+    if(balances[msg.sender] >= _amount) {
+      (bool result,) = msg.sender.call{value:_amount}("");
+      if(result) {
+        _amount;
+      }
+      balances[msg.sender] -= _amount;
+    }
   }
+
+  receive() external payable {}
 }
