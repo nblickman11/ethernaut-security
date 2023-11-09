@@ -1,0 +1,12 @@
+Solution:
+Call hack() in our Hack.
+
+
+OTHER NOTES:
+*we can't change our state and modify our own isSold variable, so we use
+shopInst.isSold(); to get the value instead.
+*side note: my buy() function in my interface was incorrectly stating returns(uint). This led to an infinite loop since the actual buy function
+doesn't return anything but my interface was stating it would.  So it must've stayed their infinitely using up gas.
+*side note: if func 1 calls func 2 which modifies state, func 1 can't be 
+"view" either	
+

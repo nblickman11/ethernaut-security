@@ -1,0 +1,8 @@
+Solution:
+-Deploy Hack contract
+-In console call: await contract.setWithdrawPartner(Hack_Address)
+
+
+OTHER NOTES:
+*when withdraw gets called, the partner.call() line calls our malicious contract,
+which uses up all the gas of the transaction, causing it to revert.
