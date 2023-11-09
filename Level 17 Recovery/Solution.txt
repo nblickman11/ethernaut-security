@@ -1,0 +1,9 @@
+Solution:
+-Go to etherscan, search the Level instance.  Click on "Contract Creation" in 
+the internal transactions tab. This address is the lost contract.  Call "recovery"
+with this address and your player address.
+
+Other Notes:
+-Method 2, not using etherscan, involves doing keccak256(address, nonce):
+hashing the transaction creator with in this case 0 since it's that creators
+first transaction, will get you the address of the contract created.

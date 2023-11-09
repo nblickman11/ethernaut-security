@@ -1,11 +1,12 @@
 Solution:
-call hack().  masks tx.origin for correct key.  for loop tries different gas amounts till correct.
+Just deploy the Hack contract!
 
 Other Notes:
--calling an abi function, which fails it's require statement, will always revert
-the entire transaction.  However, using .call() instead of abi, you can check if 
-the call fails the require, and still continue to the transaction.
--unlike bytes(), uint() conversions keep the LAST(RIGHT) bytes.
--f's keep bytes as is, and 0 makes them 0:
-bytes8 key = bytes8(uint64(tx.origin)) & 0xffffffff0000ffff;
+-this is inline assembly code which checks the size of the calling contract:
+    assembly { x := extcodesize(caller()) }
+-we put our contract code in the constructor so it's part of code initialization
+and the contract is still seen as empty.
+-a XOR b = c means (a XOR C = b). XOR is exclusive or.
+-abi.encodePacked's result is a byte array without padding.
+-keccak256's result is a encrypted 32 byte output
 

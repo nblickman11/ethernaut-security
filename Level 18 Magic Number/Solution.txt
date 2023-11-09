@@ -1,0 +1,30 @@
+Solution:
+Run in console:
+bytecode = '600a600c600039600a6000f3602a60505260206050f3' 
+txn = await web3.eth.sendTransaction({from: player, data: bytecode}) 
+await contract.setSolver(txn.contractAddress) 
+
+OTHER NOTES:
+-a "sendTransaction" that doesn't specify a "to" (so is 0x0), and has data,
+will automatically create a contract.
+
+Bytecode Breakdown:
+Init
+-Three stack push operations
+-39 COPY = copies the runtime opcode to destination memory location
+-Two stack push operations
+-f3 RETURN = returns runtime opcode (size 10 bytes) from position
+
+Runtime
+-602a = push value 42 (magic number) on stack
+-6050 = push a memory position on stack
+-52 = MSTORE opcode = stores 42 at location 50.
+-6020 = push size (32 bytes) we will return
+-6050
+-f3 = RETURN opcode = return from memory.
+
+-10 bytes allowed for runtime opcode: 1 opcode, say 0x60 is 1 byte. (makes sense since our byte code
+is in hexadecimal format.  Two characters typically 1 byte.)
+-bytecode = initialization opcodes + runtime opcode 
+-init opcode first 12 bytes = uses stack to copy the runtime opcode from wherever
+it is in memory, to it's preferred memory location.
