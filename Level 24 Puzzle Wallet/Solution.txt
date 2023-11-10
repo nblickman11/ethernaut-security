@@ -1,0 +1,28 @@
+Solution:
+-call Hack's hack()
+-console: await contract.setMaxBalance(player)
+
+OTHER NOTES:
+*PuzzleProxy and PuzzleWallet implement the proxy pattern, which allows you to upgrade
+the contract logic of the wallet through the proxy.  You create instances of each with 
+the same address.  There storage slots are mapped to each other.
+
+*hack() first overwrites the pendingAdmin variable in the Proxy, thus overwriting the
+owner variable in puzzle.
+
+*hack() creates passes "fullArray" to multicall() along with .001 Ether.  The given array's 
+first element contains the function selector deposit, which will deposit .001 Ether to 
+Hack's balance in the Level contract.  Given there was .001 already in the contract the 
+total is .002.  However, at this point, if we tried to withdraw, we would only be able to 
+withdraw the amount we deposited to our Hack's balance .001, and not the full .002.
+Luckily, there is a second argument in our multi call array.  Given this is a nested call
+to multi call, we bypass the bool safeguard to prevent depositing twice in the same call.
+So, our nested multi call deposits again WITH the same .001 ETH value we originally passed
+in with our multicall() call.  So the balances now THINK they are .002 in Hack's balance in
+the Level contract + .001 the contract already had.  But really, the Hack's balance is only
+.001. (Total = .002 not the .003).  So we can withdraw the .002 with execute() which can
+remove our actual Hack's balance of .001 and then grab the other .001 the contract already
+had.
+
+*with the balance now at 0, we can call setMaxBalance to overwrite slot storage 1 with the
+player address, which overwrites slot 1 of the proxy too, which is the admin.
