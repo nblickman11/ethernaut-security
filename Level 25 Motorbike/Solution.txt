@@ -1,0 +1,28 @@
+Solution:
+Get current implementation address of Engine:
+curImp = await web3.eth.getStorageAt(contract.address, _IMPLEMENTATION_SLOT)
+
+Deploy our Malicious_Implementation
+Deploy our Hack (with curImp, so we can call the current implementation)
+
+Call Hack's setUpgrader to make player the current Engine's "upgrader".
+
+Call Hack's upgradeHack, with the address of Malicious_Implementation, which will
+call the current Engine's function to upgrade to our malicious contract's implementation.
+We also pass along the destroy() signature to this call in order to destroy this new
+implementation.
+
+OTHER NOTES:
+*The UUPS Universal Upgradeable Proxy Standard (as opposed to Level 24's Transparent proxy pattern)
+puts the upgradeable logic within the implementation contract.
+
+*Reminder, Solidity storage have key to value mappings.  So, in this proxy pattern, the
+_IMPLEMENTATION_SLOT shows the key which represents a slot in this Proxy contract.  
+With getStorageAt, we get the value of this key, which is the address of the implementation 
+contract.
+
+*When the Motorbike (proxy) got deployed originally, it calls initialize() in the Engine,
+a function which can only be called once due to initializer contract.  But, it was called
+with delegateCall() so was executed in the context of the Motorbike, which is why we could
+call the Engine ourselves directly, since it hasn't been executed in own contracts context.
+
