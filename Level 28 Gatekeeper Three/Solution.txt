@@ -1,0 +1,9 @@
+Solution:
+-in console: await contract.createTrick() : this creates an instance of SimpleTrick.
+-in console: await contract.trick() : see the address of SimpleTrick
+-in console: await web3.eth.getStorageAt(SimpleTrick_Address, 2) : to get the password
+value.  Hard code this value as parameter in getAllowance in Hack's hack().
+-call Hack's hack()
+
+OTHER NOTES: 
+*getAllowance uses the password we retrieved earlier to pass gateTwo.

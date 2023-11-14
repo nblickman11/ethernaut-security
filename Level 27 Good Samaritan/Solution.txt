@@ -1,0 +1,15 @@
+Solution:
+-call Hack's hack() to drain GoodSamaritan's funds!
+
+OTHER NOTES: 
+*hack() calls requestDonation(). So our contract requests a donation from the 
+Good Samaritan contract, which has a coin and wallet instance.  Good Sam's wallet 
+instance starts out with 1000000 coins as seen in the Coin contract.
+
+*so requestDonation is called with the Good S. wallet instance, and so Wallet
+contract's coin.transfer() is called.  After 10 tokens are transferred to our 
+Hack, Hack's notify() is called, where we implement a revert(NotEnoughBalance).
+This revert bubbles back to the Good S. catch statement, which calls transferRemainder().
+This transfers all of Good S's coins to our contract, But, when our notify is called
+again (with an amount much larger than 10 this time) we make sure our contract doesn't
+revert this.
