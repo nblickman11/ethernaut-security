@@ -1,0 +1,69 @@
+Solution:
+-Get address of CryptoVault: await contract.cryptoVault()
+-Get address of LegacyAddress: await contract.delegatedFrom() (can piece together
+this is address of Legacy Token because contract's body has the delegator)
+-Get address of Forta: await contract.forta()
+
+-result a = Call Inspection's inspection()
+-result b = console run: await web3.eth.getStorageAt(CryptoVault, 1)
+-NOTE: a == b.  So the "underlying" DET token, which is the only one we can't sweep,
+is equal to the LegacyToken's token contract (not LegacyToken itself).
+-Therefore, call Inspection's sweep(CryptoVault, LegacyAddress) to steal all the tokens
+from the CryptoVault.
+-console, bal's now 0: await contract.balanceOf(CryptoVault).then(b => b.toString());
+
+-Deploy our bot to look out for hack's: Bot(CryptoVault) 
+-See the deployed = detectionBotAddress
+
+-From console: call Forta's setDetectionBot() to register our bot with Forte.
+(Done from console because the player address needs to register the bot.) 
+Do that like this:
+const _function = {
+  "inputs": [
+    { 
+      "name": "detectionBotAddress",
+      "type": "address"
+    }
+  ],
+  "name": "setDetectionBot", 
+  "type": "function"
+};
+const _parameters = [
+  detectionBotAddress
+];
+const _calldata = web3.eth.abi.encodeFunctionCall(_function, _parameters);
+await web3.eth.sendTransaction({
+  from: player,
+  to: Forta,
+  data: _calldata
+})
+
+Submit.  Now, when Ethernaut tries to call sweep() it will fail. See notes below
+as to more on why.
+
+OTHER NOTES:
+* sweep(CryptoVault, LegacyAddress) bypasses the check (LegacyAddress!=DET token), but
+the token in "token".transfer() in next line, as we saw from inspection, is the same
+for legacy's token and let's token.  So Legacy Token's transfer function calls
+delegateTransfer for DEP's contract as seen. SO...
+
+...delegateTransfer next checks the fortaNotify modifier.  This calls notify() in
+Forta which calls our Bot's handleTransaction(player, msgData), since our Bot is already
+deployed and registered. In the body of our handleTransaction, msgData consists of the
+handleTransaction selector, and nested within it, is our delegateTransfer(params) selector
+from the call before handleTransaction.  The inline assembly code pulls out the data from 0xa8
+which is the origSender (the 3rd parameter of delegateTransfer).  If this was the CryptoVault
+address, we call the Forta contract (which just called us) and raise and alert.
+
+*Table to understand why origSender is where it is:
+
+Position	Bytes/Length	Variable Type	Value
+0x00		4			bytes4		Function selector of handleTransaction(address,bytes)
+0x04		32			address		user address
+0x24		32			uint256		Offset of msgData
+0x44		32			uint256		Length of msgData
+0x64		4			bytes4		Function selector delegateTransfer(address,uint256,address)
+0x68		32			address		to parameter address
+0x88		32			uint256		value parameter
+0xA8		32			address		origSender parameter address 
+0xC8		28			bytes			zero-padding as per 32-byte arguments rule of encoding
